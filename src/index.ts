@@ -26,9 +26,9 @@ export class StateMachine<Transitions extends FlowMap> {
 	private readonly flowMap: Transitions;
 	private readonly lockLayers: LockLayers;
 
-	constructor(flowMap: Transitions, initialState: string, _trigger?: keyof Transitions, _lockLayers?: LockLayers) {
+	constructor(flowMap: Transitions, state: string, _trigger?: keyof Transitions, _lockLayers?: LockLayers) {
 		this.flowMap = flowMap;
-		this.state = initialState;
+		this.state = state;
 		this.trigger = _trigger;
 		this.lockLayers = _lockLayers !== undefined ? _lockLayers : freshLockLayers(flowMap);
 	}
@@ -66,20 +66,3 @@ export class StateMachine<Transitions extends FlowMap> {
 		return event[this.state] !== undefined && !this.isLocked(eventName);
 	}
 }
-
-let lock = new StateMachine(
-	{
-		TurnKey: {
-			Locked: "Unlocked",
-			Unlocked: "Locked",
-		},
-
-		Break: {
-			Locked: "Broken",
-			Unlocked: "Broken",
-		},
-	},
-	"Locked",
-);
-
-lock = lock.transition("TurnKey");
